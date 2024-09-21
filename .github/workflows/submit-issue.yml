@@ -33,3 +33,5 @@ jobs:
               content_id: issue.data.id,
               content_type: 'Issue'
             });
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
