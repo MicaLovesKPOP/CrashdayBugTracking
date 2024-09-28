@@ -34,5 +34,4 @@ jobs:
               content_type: 'Issue'
             });
         env:
-          # GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_TOKEN: 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
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
