@@ -35,4 +35,4 @@ jobs:
             });
         env:
           # GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_TOKEN: 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
+          GITHUB_TOKEN: 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
