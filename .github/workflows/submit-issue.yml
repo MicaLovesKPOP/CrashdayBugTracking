@@ -14,14 +14,21 @@ jobs:
           script: |
             const { name, title, body } = github.context.payload.client_payload;
             const octokit = github.getOctokit(github.context.repo.token);
-            const issue = await octokit.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: `**Submitted by:** ${name}\n\n**Last Updated Time:** ${github.context.payload.client_payload.time}\n\n${body}`
-            });
-            await octokit.projects.createCard({
-              column_id: 'f971fb55',
-              content_id: issue.data.id,
-              content_type: 'Issue'
-            });
+            try {
+              const issue = await octokit.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: `**Submitted by:** ${name}\n\n**Last Updated Time:** ${github.context.payload.client_payload.time}\n\n${body}`
+              });
+              await octokit.projects.createCard({
+                column_id: 'f971fb55',
+                content_id: issue.data.id,
+                content_type: 'Issue'
+              });
+            } catch (error) {
+              console.error(`Error creating issue: ${error.message}`);
+              console.error(`Error response: ${error.response.data}`);
+              console.error(`Error status code: ${error.response.status}`);
+              throw error;
+            }
