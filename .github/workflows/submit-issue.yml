@@ -1,34 +1,24 @@
-name: Submit Issue
+name: Create Issue
 
 on:
   repository_dispatch:
-    types: [submit-issue]
+    types: [create-issue]
 
 jobs:
   create-issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Issue
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const { name, title, body } = github.context.payload.client_payload;
-            const octokit = github.getOctokit(github.context.repo.token);
-            try {
-              const issue = await octokit.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: `**Submitted by:** ${name}\n\n**Last Updated Time:** ${github.context.payload.client_payload.time}\n\n${body}`
-              });
-              await octokit.projects.createCard({
-                column_id: 'f971fb55',
-                content_id: issue.data.id,
-                content_type: 'Issue'
-              });
-            } catch (error) {
-              console.error(`Error creating issue: ${error.message}`);
-              console.error(`Error response: ${error.response.data}`);
-              console.error(`Error status code: ${error.response.status}`);
-              throw error;
-            }
+      - name: Create issue
+        uses: github-script
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.repository }}
+          ISSUE_TITLE: ${{ github.event.client_payload.title }}
+          ISSUE_BODY: ${{ github.event.client_payload.body }}
+        script: |
+          curl -X POST \
+            https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues \
+            -H 'Authorization: Bearer ${TOKEN}' \
+            -H 'Content-Type: application/json' \
+            -d '{"title":"${ISSUE_TITLE}","body":"${ISSUE_BODY}"}'
