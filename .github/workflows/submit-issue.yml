@@ -1,5 +1,9 @@
 name: Create Issue
 
+on:
+  repository_dispatch:
+    types: [create-issue]
+
 jobs:
   create-issue:
     runs-on: ubuntu-latest
@@ -7,7 +11,7 @@ jobs:
       - name: Create issue
         uses: github-script
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.repository }}
           ISSUE_TITLE: ${{ github.event.client_payload.title }}
@@ -15,6 +19,6 @@ jobs:
         script: |
           curl -X POST \
             https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues \
-            -H 'Authorization: Bearer ${TOKEN}' \
+            -H 'Authorization: Bearer ${GITHUB_TOKEN}' \
             -H 'Content-Type: application/json' \
             -d '{"title":"${ISSUE_TITLE}","body":"${ISSUE_BODY}"}'
