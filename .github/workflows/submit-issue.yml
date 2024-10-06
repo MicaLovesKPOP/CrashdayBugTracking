@@ -13,13 +13,14 @@ jobs:
         with:
           script: |
             const { name, title, body } = github.context.payload.client_payload;
-            const issue = await github.rest.issues.create({
+            const octokit = github.getOctokit(github.context.repo.token);
+            const issue = await octokit.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: title,
               body: `**Submitted by:** ${name}\n\n**Last Updated Time:** ${github.context.payload.client_payload.time}\n\n${body}`
             });
-            await github.rest.projects.createCard({
+            await octokit.projects.createCard({
               column_id: 'f971fb55',
               content_id: issue.data.id,
               content_type: 'Issue'
