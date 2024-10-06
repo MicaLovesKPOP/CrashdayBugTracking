@@ -17,12 +17,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: title,
-              body: `**Submitted by:** ${name}\n\n${body}`
+              body: `**Submitted by:** ${name}\n\n**Last Updated Time:** ${github.context.payload.client_payload.time}\n\n${body}`
             });
             await github.rest.projects.createCard({
               column_id: 'f971fb55',
               content_id: issue.data.id,
               content_type: 'Issue'
             });
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
