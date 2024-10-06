@@ -1,17 +1,8 @@
 name: Submit Issue
 
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Name of the submitter'
-        required: true
-      title:
-        description: 'Title of the issue'
-        required: true
-      body:
-        description: 'Body of the issue'
-        required: true
+  repository_dispatch:
+    types: [submit-issue]
 
 jobs:
   create-issue:
@@ -21,7 +12,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            const { name, title, body } = github.context.payload.inputs;
+            const { name, title, body } = github.context.payload.client_payload;
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
